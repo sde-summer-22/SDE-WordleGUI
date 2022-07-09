@@ -23,7 +23,7 @@ build/
 gradle-app.setting
 
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
-!gradle\wrapper\gradle-wrapper.jar
+!\gradle\wrapper\gradle-wrapper.jar
 
 *target*
 *.jar

@@ -40,12 +40,6 @@ public class AnswersDictionary extends WordleDictionary {
     }
 
     public String getRandomAnswer() {
-        int index = (int) (Math.random() * validWords.size());
-        Iterator<String> iter = validWords.iterator();
-        while (index > 0) {
-            iter.next();
-            index--;
-        }
-        return iter.next();
+        return CollectionFunctions.getRandomItemFromSet(validWords);
     }
 }

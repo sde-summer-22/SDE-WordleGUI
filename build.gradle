@@ -16,12 +16,16 @@ jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
     manifest {
-        attributes 'Main-Class': 'edu.virginia.cs.hw5.sdeWordleApplication'
+        attributes 'Main-Class': 'edu.virginia.cs.hw5.WordleApplication'
     }
 
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
+}
+
+sourceSets {
+
 }
 
 ext {
@@ -36,8 +40,8 @@ tasks.withType(JavaCompile) {
 }
 
 application {
-    mainModule = 'edu.virginia.cs.hw5.wordlegui'
-    mainClass = 'edu.virginia.cs.hw5.wordlegui.HelloApplication'
+    mainModule = 'edu.virginia.cs.hw5'
+    mainClass = 'edu.virginia.cs.hw5.HelloApplication'
 }
 
 javafx {

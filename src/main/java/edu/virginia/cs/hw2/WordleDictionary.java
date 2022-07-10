@@ -23,6 +23,8 @@ import java.util.stream.Stream;
 
 public class WordleDictionary {
 
+    public final static int WORD_LENGTH = 5;
+
     /**
      * Set of words accepted by the dictionary
      */
@@ -70,17 +72,22 @@ public class WordleDictionary {
      * @return true if the String is valid, false if it is not valid
      */
     protected static boolean isValidFormat(String word) {
-        if (word == null || word.length() != 5) {
+        if (word == null || word.length() != WORD_LENGTH) {
             return false;
         }
+        return isOnlyLetters(word);
+    }
+
+    private static boolean isOnlyLetters(String word) {
         word = word.toUpperCase();
         for (int i = 0; i < 5; i++) {
-            char ch = word.charAt(i);
-            if (ch < 'A' || ch > 'Z') {
-                return false;
-            }
+            if (isCapitalLetter(word.charAt(i))) return false;
         }
         return true;
+    }
+
+    private static boolean isCapitalLetter(char ch) {
+        return (ch < 'A' || ch > 'Z');
     }
 
 

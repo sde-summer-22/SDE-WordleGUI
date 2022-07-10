@@ -15,6 +15,8 @@ import java.util.List;
  */
 
 public class WordleGame {
+
+	public final static int MAX_GUESSES = 6;
 	
 	// SDE Students - You may not modify or remove these fields. Additionally, do not add any 
 	// more fields then what you are given here
@@ -66,11 +68,7 @@ public class WordleGame {
 	}
 
 	public WordleGame() {
-		answer = AnswersDictionary.getInstance().getRandomAnswer();
-		dictionary = FullDictionary.getInstance();
-		guesses = new ArrayList<>();
-		hasWon = false;
-		hasLost = false;
+		this(FullDictionary.getInstance(), AnswersDictionary.getInstance().getRandomAnswer());
 	}
 
 	public boolean isGameOver() {
@@ -130,28 +128,30 @@ public class WordleGame {
 			throw new IllegalWordleAnswerException("Error: that is not a valid word in the dictionary.");
 		}
 
-		//increment guess
-		guesses.add(guess);
+		guess = guess.toUpperCase(); //make sure guess is uppercase
 
-		//make sure guess is uppercase
-		guess = guess.toUpperCase();
+		guesses.add(guess); //add to list of guesses
 
 		//if correct
-		if (guess.equals(answer)) {
-			WordleResult[] result = new WordleResult[5];
-			for(int i = 0; i < 5; i++) {
-				result[i] = WordleResult.GREEN;
-			}
+		if (isCorrectAnswer(guess)) { //guessed the answer
 			hasWon = true;
-			return result;
-		}
-
-		//if last guess and not correct
-		if (guesses.size() == 6) {
+			return generateCorrectArray();
+		} else if (guesses.size() == MAX_GUESSES) { //all guesses used
 			hasLost = true;
 		}
-
 		return getGuessResult(guess, answer);
+	}
+
+	private boolean isCorrectAnswer(String guess) {
+		return guess.equals(answer);
+	}
+
+	private WordleResult[] generateCorrectArray() {
+		WordleResult[] result = new WordleResult[5];
+		for(int i = 0; i < WordleDictionary.WORD_LENGTH; i++) {
+			result[i] = WordleResult.GREEN;
+		}
+		return result;
 	}
 
 	protected static WordleResult[] getGuessResult(String guess, String answer) {
@@ -163,6 +163,35 @@ public class WordleGame {
 		boolean[] letterUsed = new boolean[5];
 
 		//initialize to all gray, unless the letters match, then green
+		getGreens(guess, answer, result, letterUsed);
+
+		//check for yellow letters
+		for (int i = 0; i < 5; i++) {
+			if (result[i] == WordleResult.GREEN) { //skip green letters
+				continue;
+			}
+			getYellows(guess, answer, result, letterUsed, i);
+		}
+
+		return result;
+	}
+
+	private static void getYellows(String guess, String answer, WordleResult[] result, boolean[] letterUsed, int index) {
+		char guessLetter = guess.charAt(index);
+		for (int j = 0; j < 5; j++) {
+			if (index == j || letterUsed[j]) { //if answer letter accounted for already, skip
+				continue;
+			}
+			char answerLetter = answer.charAt(j);
+			if (guessLetter == answerLetter) { //if these two letters at different locations match
+				result[index] = WordleResult.YELLOW;
+				letterUsed[j] = true;
+				break;
+			}
+		}
+	}
+
+	private static void getGreens(String guess, String answer, WordleResult[] result, boolean[] letterUsed) {
 		for(int i = 0; i < 5; i++) {
 			result[i] = WordleResult.GRAY;
 			if (guess.charAt(i) == answer.charAt(i)) {
@@ -170,27 +199,6 @@ public class WordleGame {
 				letterUsed[i] = true;
 			}
 		}
-
-		//check for yellow letters
-		for (int i = 0; i < 5; i++) {
-			if (result[i] == WordleResult.GREEN) { //skip green letters
-				continue;
-			}
-			char guessLetter = guess.charAt(i);
-			for (int j = 0; j < 5; j++) {
-				if (i == j || letterUsed[j]) { //if answer letter accounted for already, skip
-					continue;
-				}
-				char answerLetter = answer.charAt(j);
-				if (guessLetter == answerLetter) { //if these two letters at different locations match
-					result[i] = WordleResult.YELLOW;
-					letterUsed[j] = true;
-					break;
-				}
-			}
-		}
-
-		return result;
 	}
 
 }

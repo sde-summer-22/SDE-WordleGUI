@@ -25,13 +25,24 @@ public class WordlePlay {
 
     private static boolean playAgain() {
         while (true) {
-            System.out.print("Would you like to play again? (Y/N) > ");
-            String response = in.nextLine();
-            if (response.toUpperCase().startsWith("Y")) {
+            String userResponse = promptForYesOrNo("Would you like to play again? (Y/N) > ");
+            if(userResponse.equals("YES")) {
                 return true;
-            } else if (response.toUpperCase().startsWith("N")) {
+            } else if (userResponse.equals("NO")) {
                 return false;
             }
+        }
+    }
+
+    private static String promptForYesOrNo(String prompt) {
+        System.out.print(prompt);
+        String response = in.nextLine();
+        if (response.toUpperCase().startsWith("Y")) {
+            return "YES";
+        } else if (response.toUpperCase().startsWith("N")) {
+            return "NO";
+        } else {
+            return "INVALID";
         }
     }
 
@@ -48,20 +59,27 @@ public class WordlePlay {
         WordleGame game = new WordleGame();
         System.out.println("Here we go!");
         while (!game.isGameOver()) {
-            String guess = promptWord();
-            try {
-                WordleResult[] result = game.submitGuess(guess);
-                System.out.println(Arrays.toString(result));
-            } catch (RuntimeException e) {
-                System.out.println(e.getMessage());
-                System.out.println("Try again!");
-            }
+            playOneWordleRound(game);
         }
+        handlePostGame(game);
+    }
 
+    private void handlePostGame(WordleGame game) {
         if (game.hasWon) {
             System.out.println("Congratulations! You won in " + game.getNumGuesses());
         } else if (game.hasLost) {
             System.out.println("Sorry, you are out of guesses... The word was " + game.getAnswer() + " guesses");
+        }
+    }
+
+    private void playOneWordleRound(WordleGame game) {
+        String guess = promptWord();
+        try {
+            WordleResult[] result = game.submitGuess(guess);
+            System.out.println(Arrays.toString(result));
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Try again!");
         }
     }
 

@@ -50,13 +50,14 @@ public class WordlePlay {
         //Setup Scanner
         in = new Scanner(System.in);
 
-        //pre-load the two dictionaries
+        //preload the two dictionaries
         FullDictionary.getInstance();
         AnswersDictionary.getInstance();
     }
 
     private void run() {
-        WordleGame game = new WordleGame();
+        WordleGameFactory wgf = new WordleGameFactory();
+        WordleGame game = wgf.getNewWordleGame();
         System.out.println("Here we go!");
         while (!game.isGameOver()) {
             playOneWordleRound(game);
@@ -65,9 +66,9 @@ public class WordlePlay {
     }
 
     private void handlePostGame(WordleGame game) {
-        if (game.hasWon) {
+        if (game.isWin()) {
             System.out.println("Congratulations! You won in " + game.getNumGuesses());
-        } else if (game.hasLost) {
+        } else if (game.isLost()) {
             System.out.println("Sorry, you are out of guesses... The word was " + game.getAnswer() + " guesses");
         }
     }

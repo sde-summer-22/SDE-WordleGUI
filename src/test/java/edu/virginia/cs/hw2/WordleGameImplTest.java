@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * 
  */
 
-public class WordleGameStateTest {
+public class WordleGameImplTest {
 
 	private static final WordleResult GREEN = WordleResult.GREEN;
 	private static final WordleResult YELLOW = WordleResult.YELLOW;
@@ -30,7 +30,7 @@ public class WordleGameStateTest {
 	
 	//If you wish to create any instance testing variables, do so here.
 
-	private WordleGame gameState;
+	private WordleGameImpl gameState;
 	
 	/**
 	 * Loads the full dictionary from src/test/resources
@@ -48,7 +48,7 @@ public class WordleGameStateTest {
 
 	@BeforeEach
 	public void setup() {
-		gameState = new WordleGame(fullDictionary, "MATCH");
+		gameState = new WordleGameImpl(fullDictionary, "MATCH");
 	}
 
 	
@@ -60,7 +60,7 @@ public class WordleGameStateTest {
 	
 	@Test
 	public void testInitFullDictionary() {
-		WordleGame initGameState = new WordleGame(fullDictionary, "BRAIN");
+		WordleGameImpl initGameState = new WordleGameImpl(fullDictionary, "BRAIN");
 		assertEquals(fullDictionary, initGameState.dictionary);
 		assertEquals(WordleDictionaryTest.FULL_WORDLE_DICTIONARY_SIZE, initGameState.dictionary.getDictionarySize());
 		assertEquals("BRAIN", initGameState.answer);
@@ -75,75 +75,75 @@ public class WordleGameStateTest {
 	@Test
 	public void testInitFullDictionaryInvalidAnswer() {
 		assertThrows(IllegalWordleAnswerException.class, () ->
-				new WordleGame(fullDictionary, "QZYXY"));
+				new WordleGameImpl(fullDictionary, "QZYXY"));
 	}
 
 	@Test
 	public void getResultCorrect() {
-		WordleResult[] result = WordleGame.getGuessResult("MATCH", "MATCH");
+		WordleResult[] result = WordleGameImpl.getGuessResult("MATCH", "MATCH");
 		WordleResult[] expected = {GREEN, GREEN, GREEN, GREEN, GREEN};
 		assertArrayEquals(expected, result);
 	}
 
 	@Test
 	public void getResultCompletelyIncorrect() {
-		WordleResult[] result = WordleGame.getGuessResult("BIKER", "MATCH");
+		WordleResult[] result = WordleGameImpl.getGuessResult("BIKER", "MATCH");
 		WordleResult[] expected = {GRAY, GRAY, GRAY, GRAY, GRAY};
 		assertArrayEquals(expected, result);
 	}
 
 	@Test
 	public void getResultAllYellow() {
-		WordleResult[] result = WordleGame.getGuessResult("ELBOW", "BOWEL");
+		WordleResult[] result = WordleGameImpl.getGuessResult("ELBOW", "BOWEL");
 		WordleResult[] expected = {YELLOW, YELLOW, YELLOW, YELLOW, YELLOW};
 		assertArrayEquals(expected, result);
 	}
 
 	@Test
 	public void getResultMixGreenYellow() {
-		WordleResult[] result = WordleGame.getGuessResult("BELOW", "BOWEL");
+		WordleResult[] result = WordleGameImpl.getGuessResult("BELOW", "BOWEL");
 		WordleResult[] expected = {GREEN, YELLOW, YELLOW, YELLOW, YELLOW};
 		assertArrayEquals(expected, result);
 	}
 
 	@Test
 	public void getResultMixAll() {
-		WordleResult[] result = WordleGame.getGuessResult("BLAST", "BOWEL");
+		WordleResult[] result = WordleGameImpl.getGuessResult("BLAST", "BOWEL");
 		WordleResult[] expected = {GREEN, YELLOW, GRAY, GRAY, GRAY};
 		assertArrayEquals(expected, result);
 	}
 
 	@Test
 	public void getResultDoubleLetterCorrect() {
-		WordleResult[] result = WordleGame.getGuessResult("METER", "METER");
+		WordleResult[] result = WordleGameImpl.getGuessResult("METER", "METER");
 		WordleResult[] expected = {GREEN, GREEN, GREEN, GREEN, GREEN};
 		assertArrayEquals(expected, result);
 	}
 
 	@Test
 	public void getResultDoubleLetterAnswerOneLetterGuess() {
-		WordleResult[] result = WordleGame.getGuessResult("TREND", "METER");
+		WordleResult[] result = WordleGameImpl.getGuessResult("TREND", "METER");
 		WordleResult[] expected = {YELLOW, YELLOW, YELLOW, GRAY, GRAY};
 		assertArrayEquals(expected, result);
 	}
 
 	@Test
 	public void getResultOneGreenLetterAnswerDoubleLetterGuess() {
-		WordleResult[] result = WordleGame.getGuessResult("METER", "METRO");
+		WordleResult[] result = WordleGameImpl.getGuessResult("METER", "METRO");
 		WordleResult[] expected = {GREEN, GREEN, GREEN, GRAY, YELLOW};
 		assertArrayEquals(expected, result);
 	}
 
 	@Test
 	public void getResultOneYellowLetterAnswerDoubleLetterGuess() {
-		WordleResult[] result = WordleGame.getGuessResult("METER", "THINE");
+		WordleResult[] result = WordleGameImpl.getGuessResult("METER", "THINE");
 		WordleResult[] expected = {GRAY, YELLOW, YELLOW, GRAY, GRAY};
 		assertArrayEquals(expected, result);
 	}
 
 	@Test
 	public void tripleLetterAnswerWithGreenYellowGrayGuess() {
-		WordleResult[] result = WordleGame.getGuessResult("GEESE", "ELITE");
+		WordleResult[] result = WordleGameImpl.getGuessResult("GEESE", "ELITE");
 		WordleResult[] expected = {GRAY, YELLOW, GRAY, GRAY, GREEN};
 		assertArrayEquals(expected, result);
 	}
